@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
+/*import { StyleSheet, Text, View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import TabsLayout from "./(tabs)/_layout";
+
 
 export default function Page() {
   return (
@@ -37,3 +38,10 @@ const styles = StyleSheet.create({
     color: "#38434D",
   },
 });
+*/
+import HomeScreen from "../screens/HomeScreen";
+import React from "react";
+
+export default function Page() {
+  return <HomeScreen />;
+}
