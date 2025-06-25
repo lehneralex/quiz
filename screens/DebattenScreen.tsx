@@ -2,6 +2,7 @@ import {View, Text, Button, StyleSheet} from 'react-native';
 import {useRouter} from 'expo-router';
 import {useState} from "react";
 import {dailyQuestions} from "../data/debatenFragen";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function DebattenScreen() {
 
@@ -13,12 +14,13 @@ export default function DebattenScreen() {
 
     let router = useRouter();
 
-    let handleVote = (choice: 'pro' | 'contra') => {
+    let handleVote = async (choice: 'pro' | 'contra') => {
         if (choice === 'pro') {
             setProVotes(proVotes + 1);
         } else {
             setContraVotes(contraVotes + 1);
         }
+        await markTaskDone('debate');
         setVoted(true);
     };
 
@@ -113,3 +115,9 @@ function getQuestion() {
     }
     return question;
 }
+
+//für Fortschritt
+const markTaskDone = async (task: string) => {
+    const today = new Date().toISOString().slice(0, 10);
+    await AsyncStorage.setItem(`done_${task}_${today}`, 'true');
+};
