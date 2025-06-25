@@ -1,90 +1,27 @@
-//
-// import React, { useEffect, useState } from 'react';
-// import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-// import { useRouter } from 'expo-router';
-//
-// export default function HomeScreen() {
-//     const router = useRouter();
-//
-//     return (
-//         <View style={styles.container}>
-//             <Text style={styles.title}>Your Daily 4</Text>
-//             <View style={styles.grid}>
-//                 <TouchableOpacity style={styles.button} onPress={() => router.push('/quiz')}>
-//                     <Text style={styles.buttonText}>🧠 Quiz</Text>
-//                 </TouchableOpacity>
-//                 <TouchableOpacity style={styles.button} onPress={() => router.push('/word')}>
-//                     <Text style={styles.buttonText}>📖 Word</Text>
-//                 </TouchableOpacity>
-//                 <TouchableOpacity style={styles.button} onPress={() => router.push('/debate')}>
-//                     <Text style={styles.buttonText}>🗣️ Debate</Text>
-//                 </TouchableOpacity>
-//                 <TouchableOpacity style={styles.button} onPress={() => router.push('/challenge')}>
-//                     <Text style={styles.buttonText}>🌟 Challenge</Text>
-//                 </TouchableOpacity>
-//             </View>
-//
-//             {/* Info-Button rechts unten */}
-//             <TouchableOpacity style={styles.infoButton} onPress={() => router.push('/info')}>
-//                 <Text style={styles.infoButtonText}>ℹ️</Text>
-//             </TouchableOpacity>
-//         </View>
-//     );
-// }
-//
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         backgroundColor: '#fff',
-//         paddingTop: 60,
-//         alignItems: 'center',
-//     },
-//     title: {
-//         fontSize: 28,
-//         fontWeight: 'bold',
-//         marginBottom: 30,
-//     },
-//     grid: {
-//         flexDirection: 'row',
-//         flexWrap: 'wrap',
-//         justifyContent: 'center',
-//         gap: 20,
-//     },
-//     button: {
-//         backgroundColor: '#e1e1e1',
-//         padding: 20,
-//         margin: 10,
-//         borderRadius: 12,
-//         width: 140,
-//         alignItems: 'center',
-//     },
-//     buttonText: {
-//         fontSize: 18,
-//     },
-//     infoButton: {
-//         position: 'absolute',
-//         bottom: 30,
-//         right: 30,
-//         backgroundColor: '#333',
-//         width: 50,
-//         height: 50,
-//         borderRadius: 25,
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//     },
-//     infoButtonText: {
-//         color: '#fff',
-//         fontSize: 24,
-//     },
-// });
-//
-
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Pressable, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Pressable, TouchableOpacity, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
     const router = useRouter();
+    const [debateDone, setDebateDone] = useState(false);
+    const [challengeDone, setChallengeDone] = useState(false);
+
+    //hier werden die Buttons ausgegraut falls bereits erledigt wurde, also wenn ihr testen wollt dann einfach useEffect auskommentieren
+    useEffect(() => {
+        const checkTasksDone = async () => {
+            const today = new Date().toISOString().slice(0, 10);
+
+            const debateStatus = await AsyncStorage.getItem(`done_debate_${today}`);
+            setDebateDone(debateStatus === 'true');
+
+            const challengeStatus = await AsyncStorage.getItem(`done_challenge_${today}`);
+            setChallengeDone(challengeStatus === 'true');
+        };
+
+        checkTasksDone();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -98,16 +35,34 @@ export default function HomeScreen() {
                 <Text style={styles.buttonText}>Wort des Tages</Text>
             </Pressable>
 
-            <Pressable style={styles.fullButton} onPress={() => router.push('/debate')}>
+            <Pressable
+                style={[
+                    styles.fullButton,
+                    debateDone && styles.disabledButton
+                ]}
+                onPress={() => !debateDone && router.push('/debate')}
+                disabled={debateDone}
+            >
                 <Text style={styles.buttonText}>Debattenfrage</Text>
             </Pressable>
 
-            <Pressable style={styles.fullButton} onPress={() => router.push('/challenge')}>
+            <Pressable
+                style={[
+                    styles.fullButton,
+                    challengeDone && styles.disabledButton
+                ]}
+                onPress={() => !challengeDone && router.push('/challenge')}
+                disabled={challengeDone}
+            >
                 <Text style={styles.buttonText}>Tages-Challenge</Text>
             </Pressable>
 
-            <TouchableOpacity style={styles.infoButton} onPress={() => router.push('/info')}>
+            <TouchableOpacity style={[styles.infoButton, { right: 30 }]} onPress={() => router.push('/info')}>
                 <Text style={styles.infoButtonText}>ℹ️</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.infoButton, { left: 30 }]} onPress={() => router.push('/progress')}>
+                <Text style={styles.infoButtonText}>📈</Text>
             </TouchableOpacity>
         </View>
     );
@@ -145,6 +100,9 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 4,
     },
+    disabledButton: {
+        backgroundColor: '#999',
+    },
     buttonText: {
         fontSize: 22,
         fontWeight: '600',
@@ -153,8 +111,7 @@ const styles = StyleSheet.create({
     },
     infoButton: {
         position: 'absolute',
-        bottom: 30,
-        right: 30,
+        bottom: 40,
         backgroundColor: '#4B9CD3',
         width: 50,
         height: 50,

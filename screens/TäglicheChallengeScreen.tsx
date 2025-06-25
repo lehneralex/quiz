@@ -2,6 +2,7 @@ import {View, Text, Button, StyleSheet, Switch, Touchable, TouchableOpacity} fro
 import {useRouter} from 'expo-router';
 import {useState} from "react";
 import {dailyChallenges} from "../data/challengeAufgaben";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TäglicheChallenceScreen() {
     const router = useRouter();
@@ -12,11 +13,12 @@ export default function TäglicheChallenceScreen() {
     let [question, setQuestion] = useState(getChallenge());
 
 
-    let handleCompletion = () => {
+    let handleCompletion = async () => {
         setVoted(true);
         setTimeout(() => {
             setShowResult(true);
         }, 500)
+        await markTaskDone('challenge');
     };
 
     return (
@@ -98,3 +100,8 @@ function getChallenge() {
     }
     return question;
 }
+
+const markTaskDone = async (task: string) => {
+    const today = new Date().toISOString().slice(0, 10);
+    await AsyncStorage.setItem(`done_${task}_${today}`, 'true');
+};
