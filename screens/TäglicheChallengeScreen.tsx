@@ -24,7 +24,7 @@ export default function TäglicheChallenceScreen() {
     return (
         <View style={styles.challengeScreen}>
             <View style={styles.container}>
-                <Text style={styles.title}>Deine tägliche Challenge</Text>
+                <Text style={styles.title}>Your daily challenge</Text>
 
                 {!showResult ? (
                     <>
@@ -32,7 +32,7 @@ export default function TäglicheChallenceScreen() {
                             {question}
                         </Text>
                         <View style={styles.buttons}>
-                            <Text style={styles.finishedLabel}>Challenge erledigt?</Text>
+                            <Text style={styles.finishedLabel}>Challenge done?</Text>
                             <Switch value={voted} onValueChange={() => handleCompletion()}>
                             </Switch>
 
@@ -41,13 +41,13 @@ export default function TäglicheChallenceScreen() {
                     </>
                 ) : (
                     <View>
-                        <Text style={styles.result}>Super, du hast es geschafft! 💪</Text>
+                        <Text style={styles.result}>Great, you made it! 💪</Text>
                     </View>
                 )}
 
             </View>
             <View style={styles.backButton}>
-                <Button title="Zurück zur Übersicht" onPress={() => router.back()}/>
+                <Button title="Go back" onPress={() => router.back()}/>
             </View>
 
         </View>
