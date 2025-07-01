@@ -9,7 +9,6 @@ export default function DebattenScreen() {
     let [voted, setVoted] = useState(false);
     let [proVotes, setProVotes] = useState(0);
     let [contraVotes, setContraVotes] = useState(0);
-
     let [question, setQuestion] = useState(getQuestion());
 
     let router = useRouter();

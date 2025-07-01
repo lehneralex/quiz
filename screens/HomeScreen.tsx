@@ -7,17 +7,25 @@ export default function HomeScreen() {
     const router = useRouter();
     const [debateDone, setDebateDone] = useState(false);
     const [challengeDone, setChallengeDone] = useState(false);
+    const [quizDone, setQuizDone] = useState(false);
+    const [wordDone, setWordDone] = useState(false);
 
     //hier werden die Buttons ausgegraut falls bereits erledigt wurde, also wenn ihr testen wollt dann einfach useEffect auskommentieren
     useEffect(() => {
         const checkTasksDone = async () => {
             const today = new Date().toISOString().slice(0, 10);
 
-            const debateStatus = await AsyncStorage.getItem(`done_debate_${today}`);
-            setDebateDone(debateStatus === 'true');
+            const [debate, challenge, quiz, word] = await Promise.all([
+                AsyncStorage.getItem(`done_debate_${today}`),
+                AsyncStorage.getItem(`done_challenge_${today}`),
+                AsyncStorage.getItem(`done_quiz_${today}`),
+                AsyncStorage.getItem(`done_word_${today}`),
+            ]);
 
-            const challengeStatus = await AsyncStorage.getItem(`done_challenge_${today}`);
-            setChallengeDone(challengeStatus === 'true');
+            setDebateDone(debate === 'true');
+            setChallengeDone(challenge === 'true');
+            setQuizDone(quiz === 'true');
+            setWordDone(word === 'true');
         };
 
         checkTasksDone();
@@ -25,15 +33,31 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Daily 4 - halt dich{'\n'}geistig fit! 🧠</Text>
+            <Text style={styles.title}>Daily 4{'\n'}keep your mind sharp</Text>
 
-            <Pressable style={styles.fullButton} onPress={() => router.push('/quiz')}>
+            <Pressable
+                style={[
+                    styles.fullButton,
+                    quizDone && styles.disabledButton
+                ]}
+                onPress={() => !quizDone && router.push('/quiz')}
+                disabled={quizDone}
+            >
                 <Text style={styles.buttonText}>Quiz</Text>
             </Pressable>
 
-            <Pressable style={styles.fullButton} onPress={() => router.push('/word')}>
-                <Text style={styles.buttonText}>Wort des Tages</Text>
+
+            <Pressable
+                style={[
+                    styles.fullButton,
+                    wordDone && styles.disabledButton
+                ]}
+                onPress={() => !wordDone && router.push('/word')}
+                disabled={wordDone}
+            >
+                <Text style={styles.buttonText}>Daily word</Text>
             </Pressable>
+
 
             <Pressable
                 style={[
@@ -43,7 +67,7 @@ export default function HomeScreen() {
                 onPress={() => !debateDone && router.push('/debate')}
                 disabled={debateDone}
             >
-                <Text style={styles.buttonText}>Debattenfrage</Text>
+                <Text style={styles.buttonText}>Debate</Text>
             </Pressable>
 
             <Pressable
@@ -54,7 +78,7 @@ export default function HomeScreen() {
                 onPress={() => !challengeDone && router.push('/challenge')}
                 disabled={challengeDone}
             >
-                <Text style={styles.buttonText}>Tages-Challenge</Text>
+                <Text style={styles.buttonText}>Challenge</Text>
             </Pressable>
 
             <TouchableOpacity style={[styles.infoButton, { right: 30 }]} onPress={() => router.push('/info')}>
