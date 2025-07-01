@@ -26,7 +26,7 @@ export default function DebattenScreen() {
     return (
         <View style={styles.debattenScreen}>
         <View style={styles.container}>
-            <Text style={styles.title}>Debattenfrage des Tages</Text>
+            <Text style={styles.title}>Debate question of the day</Text>
 
 
             {!voted ? (
@@ -36,22 +36,22 @@ export default function DebattenScreen() {
                     </Text>
                 <View style={styles.buttons}>
                     <View style={styles.proButton}>
-                        <Button title="Dafür" color={"white"} onPress={() => handleVote('pro')}/>
+                        <Button title="Agree" color={"white"} onPress={() => handleVote('pro')}/>
                     </View>
                     <View style={styles.conButton}>
-                        <Button title="Dagegen" color={"white"} onPress={() => handleVote('contra')}/>
+                        <Button title="Disagree" color={"white"} onPress={() => handleVote('contra')}/>
                     </View>
                 </View>
                 </>
             ) : (
                 <View>
-                    <Text style={styles.result}>Danke für deine Stimmabgabe, {'\n'}bis morgen! 😎</Text>
+                    <Text style={styles.result}>Thanks for your vote, {'\n'}see you tomorrow! 😎</Text>
                 </View>
             )}
 
         </View>
             <View style={styles.backButton}>
-                <Button title="Zurück zur Übersicht"  onPress={() => router.back()}/>
+                <Button title="Go back"  onPress={() => router.back()}/>
             </View>
 
         </View>
