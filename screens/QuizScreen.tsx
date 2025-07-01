@@ -2,6 +2,7 @@ import { View, Text, Button, ActivityIndicator, StyleSheet } from 'react-native'
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type QuizItem = { question: string; correct: boolean };
 type OpenTDBResponse = {
@@ -50,9 +51,13 @@ export default function QuizScreen() {
         fetchQuestion();
     }, []);
 
-    const answer = (choice: boolean) => {
+    const answer = async (choice: boolean) => {
         if (!item) return;
         setFeedback(choice === item.correct ? '✅ Richtig!' : '❌ Falsch!');
+
+        //Fortschritt speichern
+        const today = new Date().toISOString().slice(0, 10);
+        await AsyncStorage.setItem(`done_quiz_${today}`, 'true');
     };
 
     if (loading) {

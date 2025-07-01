@@ -1,6 +1,8 @@
 import { View, Text, Button, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 type WordItem = { 
   word: string; 
@@ -64,8 +66,12 @@ export default function WortdesTagesScreen() {
     }
   };
 
-  const getNewWord = () => {
+  const getNewWord = async () => {
     setCurrentIndex(prev => prev + 1);
+
+    //für Fortschritt speichern
+    const today = new Date().toISOString().slice(0, 10);
+    await AsyncStorage.setItem(`done_word_${today}`, 'true');
   };
 
   useEffect(() => {

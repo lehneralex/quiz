@@ -8,25 +8,25 @@ export default function InfoScreen() {
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Info</Text>
 
-            <Text style={styles.sectionTitle}>Was ist das?</Text>
+            <Text style={styles.sectionTitle}>What is daily4?</Text>
             <Text style={styles.text}>
-                Deine tägliche Portion Inspiration, Wissen & Herausforderung.
-                Löse jeden Tag vier kleine Aufgaben um dein Allgemeinwissen aufzufrischen und dich jeden Tag neu herauszufordern.
+                Your daily dose of inspiration, knowledge & challenge.
+                Complete four small tasks each day to refresh your general knowledge and challenge yourself in new ways.
             </Text>
 
-            <Text style={styles.sectionTitle}>Die einzelnen Aufgaben:</Text>
-            <Text style={styles.text}>Quiz: Frische dein Allgemeinwissen auf</Text>
-            <Text style={styles.text}>Wort: Erweitere jeden Tag deinen Wortschatz</Text>
-            <Text style={styles.text}>Debatte: Teile deine Meinung zu einem aktuellen Thema</Text>
-            <Text style={styles.text}>Challenge: Zaubere deinen Mitmenschen ein Lächeln ins Gesicht</Text>
+            <Text style={styles.sectionTitle}>Daily tasks:</Text>
+            <Text style={styles.text}>Quiz: Boost your general knowledge</Text>
+            <Text style={styles.text}>Word of the day: Expand your vocabulary every day</Text>
+            <Text style={styles.text}>Debate: Share your opinion on a current topic</Text>
+            <Text style={styles.text}>Challenge: Make someone smile today</Text>
 
-            <Text style={styles.sectionTitle}>Jeden Tag neu!</Text>
+            <Text style={styles.sectionTitle}>New tasks every day</Text>
             <Text style={styles.text}>
-                Erledige täglich alle vier Aufgaben und verfolge deinen Fortschritt in der Fortschrittsanzeige.
+                Complete all four tasks daily and track your progress in the progress overview
             </Text>
 
             <View style={styles.backButton}>
-                <Button title="Zurück zur Übersicht" onPress={() => router.back()} />
+                <Button title="back" onPress={() => router.back()} />
             </View>
         </ScrollView>
     );
