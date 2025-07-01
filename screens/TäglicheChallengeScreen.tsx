@@ -18,7 +18,10 @@ export default function TäglicheChallenceScreen() {
         setTimeout(() => {
             setShowResult(true);
         }, 500)
-        await markTaskDone('challenge');
+        //await markTaskDone('challenge');
+        //Fortschritt speichern
+        const today = new Date().toISOString().slice(0, 10);
+        await AsyncStorage.setItem(`done_challenge_${today}`, 'true');
     };
 
     return (
@@ -100,8 +103,3 @@ function getChallenge() {
     }
     return question;
 }
-
-const markTaskDone = async (task: string) => {
-    const today = new Date().toISOString().slice(0, 10);
-    await AsyncStorage.setItem(`done_${task}_${today}`, 'true');
-};

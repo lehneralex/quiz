@@ -27,7 +27,7 @@ export default function ProgressScreen() {
                 }
             }
 
-            // 🔥 Alle Aufgaben hier eintragen:
+            //alle Aufgaben
             const allTasks = ['debate', 'challenge', 'quiz', 'word'];
 
             const fullDays = Object.values(progressMap).filter((tasks) =>
@@ -42,14 +42,13 @@ export default function ProgressScreen() {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>🏁 Dein Fortschritt</Text>
+            <Text style={styles.title}>Your progress</Text>
             <Text style={styles.count}>
-                Du hast an <Text style={styles.number}>{completeDays}</Text> Tag(en) alle Aufgaben erledigt!
+                You have finished all tasks on <Text style={styles.number}>{completeDays}</Text> day(s)!
             </Text>
-            <Text style={styles.note}>(gezählt werden: Debatte, Challenge, Quiz & Wort des Tages)</Text>
 
             <View style={styles.backButton}>
-                <Button title="Zurück zur Startseite" onPress={() => router.push('/')} />
+                <Button title="back" onPress={() => router.push('/')} />
             </View>
         </ScrollView>
     );
