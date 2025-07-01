@@ -19,7 +19,10 @@ export default function DebattenScreen() {
         } else {
             setContraVotes(contraVotes + 1);
         }
-        await markTaskDone('debate');
+        //Fortschritt speichern
+        const today = new Date().toISOString().slice(0, 10);
+        await AsyncStorage.setItem(`done_debate_${today}`, 'true');
+
         setVoted(true);
     };
 
@@ -114,9 +117,3 @@ function getQuestion() {
     }
     return question;
 }
-
-//für Fortschritt
-const markTaskDone = async (task: string) => {
-    const today = new Date().toISOString().slice(0, 10);
-    await AsyncStorage.setItem(`done_${task}_${today}`, 'true');
-};
