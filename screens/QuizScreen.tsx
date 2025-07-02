@@ -55,6 +55,7 @@ export default function QuizScreen() {
         if (!item) return;
         setFeedback(choice === item.correct ? '✅ True!' : '❌ False!');
 
+       
         //Fortschritt speichern
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_quiz_${today}`, 'true');
