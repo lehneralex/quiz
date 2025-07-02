@@ -2,6 +2,8 @@ import { View, Text, Button, ActivityIndicator, StyleSheet, ScrollView, TextInpu
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CategoryHeader from '../components/CategoryHeader';
+import { categoryThemes } from '../theme/colors';
 
 type WordItem = {
   word: string;
@@ -141,57 +143,72 @@ export default function WortdesTagesScreen() {
           <Button title="Reload" onPress={fetchWordOfDay} />
         </View>
     );
-  }
+  }  return (
+    <View style={styles.container}>
+      <CategoryHeader 
+        title={categoryThemes.word.name} 
+        color={categoryThemes.word.primary} 
+      />
+      
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.word}>{item.word}</Text>
+        <Text style={styles.definition}>{item.definition}</Text>
+        {item.example && (
+          <Text style={styles.example}>Example: "{item.example}"</Text>
+        )}
 
-  return (
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={styles.title}>Word of the Day</Text>
-          <Text style={styles.word}>{item.word}</Text>
-          <Text style={styles.definition}>{item.definition}</Text>
-          {item.example && (
-              <Text style={styles.example}>Example: "{item.example}"</Text>
-          )}
+        <View style={styles.inputSection}>
+          <Text style={styles.promptText}>Use this word in your own sentence:</Text>
 
-          <View style={styles.inputSection}>
-            <Text style={styles.promptText}>Use this word in your own sentence:</Text>
-
-            {feedback && feedback.isSuccess ? (
-                <View style={[styles.feedbackContainer, styles.successFeedback]}>
-                  <Text style={[styles.feedbackText, styles.successText]}>
+          {feedback && feedback.isSuccess ? (
+            <View style={[styles.feedbackContainer, styles.successFeedback]}>
+              <Text style={[styles.feedbackText, styles.successText]}>
+                {feedback.message}
+              </Text>
+            </View>
+          ) : (
+            <>
+              <TextInput
+                style={styles.textInput}
+                value={userSentence}
+                onChangeText={setUserSentence}
+                placeholder={`Write a sentence using "${item.word}"...`}
+                multiline
+                numberOfLines={3}
+                textAlignVertical="top"
+              />
+              {feedback && !feedback.isSuccess && (
+                <View style={[styles.feedbackContainer, styles.errorFeedback]}>
+                  <Text style={[styles.feedbackText, styles.errorText]}>
                     {feedback.message}
                   </Text>
                 </View>
-            ) : (
-                <>
-                  <TextInput
-                      style={styles.textInput}
-                      value={userSentence}
-                      onChangeText={setUserSentence}
-                      placeholder={`Write a sentence using "${item.word}"...`}
-                      multiline
-                      numberOfLines={3}
-                      textAlignVertical="top"
-                  />
-                  {feedback && !feedback.isSuccess && (
-                      <View style={[styles.feedbackContainer, styles.errorFeedback]}>
-                        <Text style={[styles.feedbackText, styles.errorText]}>
-                          {feedback.message}
-                        </Text>
-                      </View>
-                  )}
+              )}
+              <View style={styles.buttonContainer}>
+                <View style={[styles.customButton, { backgroundColor: categoryThemes.word.primary }]}>
                   <Button
-                      title="Submit"
-                      onPress={handleSubmit}
-                      disabled={userSentence.trim().length === 0}
+                    title="Submit"
+                    color="#333"
+                    onPress={handleSubmit}
+                    disabled={userSentence.trim().length === 0}
                   />
-                </>
-            )}
-          </View>
+                </View>
+              </View>
+            </>
+          )}
+        </View>
 
-          <Button title="Back" onPress={() => router.back()} />
-        </ScrollView>
-      </View>
+        <View style={styles.backButtonContainer}>
+          <View style={[styles.backButton, { backgroundColor: categoryThemes.word.secondary }]}>
+            <Button 
+              title="Back" 
+              color="#333"
+              onPress={() => router.back()} 
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -288,5 +305,23 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#721c24'
+  },
+  buttonContainer: {
+    marginVertical: 10,
+    width: '100%',
+  },
+  customButton: {
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+  },
+  backButtonContainer: {
+    marginTop: 20,
+    width: '100%',
+  },
+  backButton: {
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
   }
 });
