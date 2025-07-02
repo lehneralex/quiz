@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, TouchableOpacity, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {categoryThemes} from "../theme/colors";
+import { Ionicons, Feather } from '@expo/vector-icons';
+import CategoryButton from "../components/CategoryButton";
+
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -35,59 +39,44 @@ export default function HomeScreen() {
         <View style={styles.container}>
             <Text style={styles.title}>Daily 4{'\n'}keep your mind sharp</Text>
 
-            <Pressable
-                style={[
-                    styles.fullButton,
-                    quizDone && styles.disabledButton
-                ]}
-                onPress={() => !quizDone && router.push('/quiz')}
-                disabled={quizDone}
+            <CategoryButton
+                category="quiz"
+                done={quizDone}
+                onPress={() => router.push('/quiz')}
+            />
+
+            <CategoryButton
+                category="word"
+                done={wordDone}
+                onPress={() => router.push('/word')}
+            />
+
+            <CategoryButton
+                category="debate"
+                done={debateDone}
+                onPress={() => router.push('/debate')}
+            />
+
+            <CategoryButton
+                category="challenge"
+                done={challengeDone}
+                onPress={() => router.push('/challenge')}
+            />
+
+            <TouchableOpacity
+                style={[styles.infoButton, { right: 30 }]}
+                onPress={() => router.push('/info')}
             >
-                <Text style={styles.buttonText}>Quiz</Text>
-            </Pressable>
-
-
-            <Pressable
-                style={[
-                    styles.fullButton,
-                    wordDone && styles.disabledButton
-                ]}
-                onPress={() => !wordDone && router.push('/word')}
-                disabled={wordDone}
-            >
-                <Text style={styles.buttonText}>Daily word</Text>
-            </Pressable>
-
-
-            <Pressable
-                style={[
-                    styles.fullButton,
-                    debateDone && styles.disabledButton
-                ]}
-                onPress={() => !debateDone && router.push('/debate')}
-                disabled={debateDone}
-            >
-                <Text style={styles.buttonText}>Debate</Text>
-            </Pressable>
-
-            <Pressable
-                style={[
-                    styles.fullButton,
-                    challengeDone && styles.disabledButton
-                ]}
-                onPress={() => !challengeDone && router.push('/challenge')}
-                disabled={challengeDone}
-            >
-                <Text style={styles.buttonText}>Challenge</Text>
-            </Pressable>
-
-            <TouchableOpacity style={[styles.infoButton, { right: 30 }]} onPress={() => router.push('/info')}>
-                <Text style={styles.infoButtonText}>ℹ️</Text>
+                <Ionicons name="information-circle" size={28} color="#fff" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.infoButton, { left: 30 }]} onPress={() => router.push('/progress')}>
-                <Text style={styles.infoButtonText}>📈</Text>
+            <TouchableOpacity
+                style={[styles.infoButton, { left: 30 }]}
+                onPress={() => router.push('/progress')}
+            >
+                <Feather name="bar-chart-2" size={26} color="#fff" />
             </TouchableOpacity>
+
         </View>
     );
 }
@@ -110,39 +99,17 @@ const styles = StyleSheet.create({
         color: '#333',
         textAlign: 'center'
     },
-    fullButton: {
-        backgroundColor: '#4B9CD3',
-        padding: 28,
-        borderRadius: 14,
-        width: screenWidth - buttonMargin,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 6,
-        elevation: 4,
-    },
-    disabledButton: {
-        backgroundColor: '#999',
-    },
-    buttonText: {
-        fontSize: 22,
-        fontWeight: '600',
-        color: '#fff',
-        textAlign: 'center',
-    },
+
     infoButton: {
         position: 'absolute',
         bottom: 40,
-        backgroundColor: '#4B9CD3',
-        width: 50,
+        backgroundColor: '#BEBEBE',
+        width: 80,
         height: 50,
-        borderRadius: 25,
+        borderRadius: 14,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: '#333',
         shadowOpacity: 0.2,
         shadowOffset: { width: 0, height: 2 },
         shadowRadius: 4,

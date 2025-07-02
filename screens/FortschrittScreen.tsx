@@ -1,54 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import { Ionicons, Feather } from '@expo/vector-icons';
 
 export default function ProgressScreen() {
-    const [completeDays, setCompleteDays] = useState<number>(0);
-    const router = useRouter();
+    const [completeDays, setCompleteDays] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const checkProgress = async () => {
-            const keys = await AsyncStorage.getAllKeys();
-            const taskKeys = keys.filter((k) => k.startsWith('done_'));
+        const loadProgress = async () => {
+            try {
+                const keys = await AsyncStorage.getAllKeys();
+                const taskKeys = keys.filter(k => k.startsWith('done_'));
 
-            const progressMap: Record<string, Record<string, boolean>> = {};
+                const dailyMap: { [date: string]: Set<string> } = {};
 
-            for (let key of taskKeys) {
-                const value = await AsyncStorage.getItem(key);
-                const match = key.match(/^done_(.+)_(\d{4}-\d{2}-\d{2})$/);
+                taskKeys.forEach(key => {
+                    const [, type, date] = key.split('_');
+                    if (!dailyMap[date]) dailyMap[date] = new Set();
+                    dailyMap[date].add(type);
+                });
 
-                if (match && value === 'true') {
-                    const [, task, date] = match;
-                    if (!progressMap[date]) {
-                        progressMap[date] = {};
-                    }
-                    progressMap[date][task] = true;
-                }
+                const completed = Object.values(dailyMap).filter(set => set.size === 4).length;
+                setCompleteDays(completed);
+            } catch (error) {
+                console.error('Error loading progress:', error);
+            } finally {
+                setLoading(false);
             }
-
-            //alle Aufgaben
-            const allTasks = ['debate', 'challenge', 'quiz', 'word'];
-
-            const fullDays = Object.values(progressMap).filter((tasks) =>
-                allTasks.every((task) => tasks[task])
-            ).length;
-
-            setCompleteDays(fullDays);
         };
 
-        checkProgress();
+        loadProgress();
     }, []);
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Your progress</Text>
-            <Text style={styles.count}>
-                You have finished all tasks on <Text style={styles.number}>{completeDays}</Text> day(s)!
-            </Text>
+            <View style={styles.header}>
+                <Feather name="bar-chart-2" size={24} color="#BEBEBE" style={{ marginRight: 8 }} />
+                <Text style={styles.title}>Progress</Text>
+            </View>
 
-            <View style={styles.backButton}>
-                <Button title="back" onPress={() => router.push('/')} />
+
+            <View style={styles.card}>
+                <Text style={styles.cardLabel}>Days with 4 tasks done</Text>
+                {loading ? (
+                    <ActivityIndicator size="large" color="#4B9CD3" />
+                ) : (
+                    <Text style={styles.cardCount}>{completeDays}</Text>
+                )}
+            </View>
+
+            <View style={styles.tipBox}>
+                <Text style={styles.tipTitle}>tip:</Text>
+                <Text style={styles.tipText}>
+                    Try to do as many tasks as possible on many days in a row. It keeps your brain fit!
+                </Text>
             </View>
         </ScrollView>
     );
@@ -56,31 +62,62 @@ export default function ProgressScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
         flexGrow: 1,
+        backgroundColor: '#f9f9f9',
+        padding: 24,
+        alignItems: 'center',
     },
     title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 30,
+        fontSize: 26,
+        fontWeight: '600',
+        color: '#BEBEBE',
     },
-    count: {
-        fontSize: 22,
+
+    card: {
+        backgroundColor: '#fff',
+        width: '100%',
+        padding: 24,
+        borderRadius: 16,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOpacity: 0.08,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 2 },
+        marginBottom: 20,
+    },
+    cardLabel: {
+        fontSize: 16,
+        color: '#555',
+        marginBottom: 10,
         textAlign: 'center',
     },
-    number: {
-        fontWeight: 'bold',
+    cardCount: {
+        fontSize: 48,
+        fontWeight: '700',
         color: '#4B9CD3',
     },
-    note: {
+    tipBox: {
+        backgroundColor: '#e6f0fa',
+        width: '100%',
+        padding: 20,
+        borderRadius: 14,
         marginTop: 10,
-        fontSize: 14,
-        color: '#777',
-        marginBottom: 40,
     },
-    backButton: {
-        marginTop: 20,
+    tipTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginBottom: 6,
+        color: '#333',
     },
+    tipText: {
+        fontSize: 16,
+        color: '#444',
+        lineHeight: 22,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+
 });
