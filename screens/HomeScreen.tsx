@@ -11,7 +11,7 @@ export default function HomeScreen() {
     const [wordDone, setWordDone] = useState(false);
 
     //hier werden die Buttons ausgegraut falls bereits erledigt wurde, also wenn ihr testen wollt dann einfach useEffect auskommentieren
-    useEffect(() => {
+    /*useEffect(() => {
         const checkTasksDone = async () => {
             const today = new Date().toISOString().slice(0, 10);
 
@@ -29,7 +29,7 @@ export default function HomeScreen() {
         };
 
         checkTasksDone();
-    }, []);
+    }, []);*/
 
     return (
         <View style={styles.container}>
