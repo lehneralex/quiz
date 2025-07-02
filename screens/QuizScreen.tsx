@@ -53,8 +53,9 @@ export default function QuizScreen() {
 
     const answer = async (choice: boolean) => {
         if (!item) return;
-        setFeedback(choice === item.correct ? '✅ Richtig!' : '❌ Falsch!');
+        setFeedback(choice === item.correct ? '✅ True!' : '❌ False!');
 
+       
         //Fortschritt speichern
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_quiz_${today}`, 'true');
@@ -66,16 +67,16 @@ export default function QuizScreen() {
     if (error) {
         return (
             <View style={styles.center}>
-                <Text style={{ marginBottom: 12 }}>Fehler beim Laden 😕</Text>
-                <Button title="Erneut versuchen" onPress={fetchQuestion} />
+                <Text style={{ marginBottom: 12 }}>Error loading 😕</Text>
+                <Button title="Try again" onPress={fetchQuestion} />
             </View>
         );
     }
     if (!item) {
         return (
             <View style={styles.center}>
-                <Text style={{ marginBottom: 12 }}>Keine Frage geladen</Text>
-                <Button title="Neu laden" onPress={fetchQuestion} />
+                <Text style={{ marginBottom: 12 }}>No question loaded</Text>
+                <Button title="Load again" onPress={fetchQuestion} />
             </View>
         );
     }
@@ -85,15 +86,15 @@ export default function QuizScreen() {
             <Text style={styles.question}>{item.question}</Text>
             {!feedback ? (
                 <>
-                    <Button title="Richtig" onPress={() => answer(true)} />
-                    <Button title="Falsch" onPress={() => answer(false)} />
+                    <Button title="True" onPress={() => answer(true)} />
+                    <Button title="Wrong" onPress={() => answer(false)} />
                 </>
             ) : (
                 <Text style={[styles.feedback, feedback.startsWith('✅') ? styles.ok : styles.wrong]}>
                     {feedback}
                 </Text>
             )}
-            <Button title="Zurück" onPress={() => router.back()} />
+            <Button title="Back" onPress={() => router.back()} />
         </View>
     );
 }
