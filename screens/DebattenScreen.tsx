@@ -1,119 +1,135 @@
-import {View, Text, Button, StyleSheet} from 'react-native';
-import {useRouter} from 'expo-router';
-import {useState} from "react";
-import {dailyQuestions} from "../data/debatenFragen";
+import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { categoryThemes } from '../theme/colors';
+import { dailyQuestions } from '../data/debatenFragen';
 
 export default function DebattenScreen() {
+    const [voted, setVoted] = useState(false);
+    const [proVotes, setProVotes] = useState(0);
+    const [contraVotes, setContraVotes] = useState(0);
+    const [question, setQuestion] = useState(getQuestion());
 
-    let [voted, setVoted] = useState(false);
-    let [proVotes, setProVotes] = useState(0);
-    let [contraVotes, setContraVotes] = useState(0);
-    let [question, setQuestion] = useState(getQuestion());
+    const agreeColor = '#93B3A7'; // Grün
+    const disagreeColor = '#FF8080'; // Rot
 
-    let router = useRouter();
+    const router = useRouter();
 
-    let handleVote = async (choice: 'pro' | 'contra') => {
+    const handleVote = async (choice: 'pro' | 'contra') => {
         if (choice === 'pro') {
             setProVotes(proVotes + 1);
         } else {
             setContraVotes(contraVotes + 1);
         }
-        //Fortschritt speichern
+        // Fortschritt speichern
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_debate_${today}`, 'true');
-
         setVoted(true);
     };
 
     return (
-        <View style={styles.debattenScreen}>
         <View style={styles.container}>
-            <Text style={styles.title}>Debate question of the day</Text>
-
-
-            {!voted ? (
-                <>
-                <Text style={styles.question}>
-                    {question}
-                    </Text>
-                <View style={styles.buttons}>
-                    <View style={styles.proButton}>
-                        <Button title="Agree" color={"white"} onPress={() => handleVote('pro')}/>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+                {!voted ? (
+                    <>
+                        <Text style={styles.question}>{question}</Text>
+                        <View style={styles.buttons}>
+                            <View style={[styles.button, { backgroundColor: agreeColor }]}>
+                                <Button title="Agree" color="#333" onPress={() => handleVote('pro')} />
+                            </View>
+                            <View style={[styles.button, { backgroundColor: disagreeColor }]}>
+                                <Button title="Disagree" color="#333" onPress={() => handleVote('contra')} />
+                            </View>
+                        </View>
+                    </>
+                ) : (
+                    <View style={styles.feedbackContainer}>
+                        <Text style={styles.feedbackText}>
+                            Thanks for your vote, {'\n'}see you tomorrow! 😎
+                        </Text>
                     </View>
-                    <View style={styles.conButton}>
-                        <Button title="Disagree" color={"white"} onPress={() => handleVote('contra')}/>
-                    </View>
-                </View>
-                </>
-            ) : (
-                <View>
-                    <Text style={styles.result}>Thanks for your vote, {'\n'}see you tomorrow! 😎</Text>
-                </View>
-            )}
-
-        </View>
-            <View style={styles.backButton}>
-                <Button title="Go back"  onPress={() => router.back()}/>
-            </View>
-
+                )}
+            </ScrollView>
+            {/*<View style={[styles.backButton, { backgroundColor: categoryThemes.debate.secondary }]}>*/}
+            {/*    <Button title="Go back" color="#333" onPress={() => router.back()} />*/}
+            {/*</View>*/}
         </View>
     );
 }
-let styles = StyleSheet.create({
+
+const styles = StyleSheet.create({
     container: {
-        flex: 1, alignItems: 'center', padding: 20, backgroundColor: 'white'
+        flex: 1,
+        backgroundColor: '#fff',
     },
-    title: {
-        fontSize: 24, fontWeight: 'bold', marginBottom: 20, marginTop: 30
+    scrollContent: {
+        flexGrow: 1,
+        padding: 20,
+        justifyContent: 'flex-start', // statt 'center'
+        alignItems: 'center',
+        paddingTop: 200,               // zusätzlich nach oben schieben
     },
+
     question: {
-        fontSize: 30, textAlign: 'center', marginBottom: 20, marginTop: 50
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+        color: '#333',
     },
     buttons: {
-        gap: 10,
         flexDirection: 'row',
-        marginBottom: 20
+        gap: 15,
+        justifyContent: 'center',
+        width: '100%',
     },
-    result: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginTop: 100,
-        textAlign: 'center'
-    },
-    proButton: {
-        backgroundColor: "#2e5d2d",
-        color: 'white',
-        borderRadius: 10,
-        padding: 10,
-        marginTop: 30,
-    },
-    conButton: {
-        backgroundColor: "#7d0025",
-        color: 'white',
-        borderRadius: 10,
-        padding: 10,
-        marginTop: 30
-    },
-    debattenScreen: {
+    button: {
         flex: 1,
-        marginBottom: 10
+        borderRadius: 10,
+        paddingVertical: 12,
+        marginHorizontal: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    feedbackContainer: {
+        marginTop: 50,
+        padding: 20,
+        backgroundColor: '#d4edda',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#c3e6cb',
+        minHeight: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    feedbackText: {
+        fontSize: 20,
+        color: '#155724',
+        textAlign: 'center',
+        fontWeight: '600',
     },
     backButton: {
-        backgroundColor: "white"
-    }
+        borderRadius: 10,
+        margin: 20,
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
 });
 
 function getQuestion() {
     let today = new Date();
-    let question = "";
     for (let debateQuestion of dailyQuestions) {
         let questionYear = debateQuestion.day.getFullYear();
         let questionMonth = debateQuestion.day.getMonth();
         let questionDay = debateQuestion.day.getDate();
-        if (today.getFullYear() === questionYear && today.getMonth() === questionMonth && today.getDate() === questionDay) {
-            question = debateQuestion.question;
+        if (
+            today.getFullYear() === questionYear &&
+            today.getMonth() === questionMonth &&
+            today.getDate() === questionDay
+        ) {
+            return debateQuestion.question;
         }
     }
-    return question;
+    return "No question for today.";
 }
