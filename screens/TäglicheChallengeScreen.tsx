@@ -1,7 +1,7 @@
-import {View, Text, Button, StyleSheet, Switch, Touchable, TouchableOpacity} from 'react-native';
-import {useRouter} from 'expo-router';
-import {useState} from "react";
-import {dailyChallenges} from "../data/challengeAufgaben";
+import { View, Text, Switch, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useState } from "react";
+import { dailyChallenges } from "../data/challengeAufgaben";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TäglicheChallenceScreen() {
@@ -9,97 +9,111 @@ export default function TäglicheChallenceScreen() {
 
     let [voted, setVoted] = useState(false);
     let [showResult, setShowResult] = useState(false);
-
     let [question, setQuestion] = useState(getChallenge());
-
 
     let handleCompletion = async () => {
         setVoted(true);
         setTimeout(() => {
             setShowResult(true);
-        }, 500)
-        //await markTaskDone('challenge');
-        //Fortschritt speichern
+        }, 500);
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_challenge_${today}`, 'true');
     };
 
     return (
-        <View style={styles.challengeScreen}>
-            <View style={styles.container}>
-                <Text style={styles.title}>Your daily challenge</Text>
-
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
                 {!showResult ? (
                     <>
-                        <Text style={styles.question}>
-                            {question}
-                        </Text>
+                        <Text style={styles.question}>{question}</Text>
                         <View style={styles.buttons}>
                             <Text style={styles.finishedLabel}>Challenge done?</Text>
-                            <Switch value={voted} onValueChange={() => handleCompletion()}>
-                            </Switch>
-
-
+                            <Switch value={voted} onValueChange={handleCompletion} />
                         </View>
                     </>
                 ) : (
-                    <View>
-                        <Text style={styles.result}>Great, you made it! 💪</Text>
+                    <View style={styles.feedbackContainer}>
+                        <Text style={styles.feedbackText}>Great, you made it! 💪</Text>
                     </View>
                 )}
-
-            </View>
-            <View style={styles.backButton}>
-                <Button title="Go back" onPress={() => router.back()}/>
-            </View>
-
+            </ScrollView>
+            {/* Optional: Zurück-Button */}
+            {/* <View style={styles.backButton}>
+                <Button title="Go back" color="#333" onPress={() => router.back()} />
+            </View> */}
         </View>
     );
 }
-let styles = StyleSheet.create({
+
+const styles = StyleSheet.create({
     container: {
-        flex: 1, alignItems: 'center', padding: 20, backgroundColor: 'white'
+        flex: 1,
+        backgroundColor: '#fff',
     },
-    title: {
-        fontSize: 24, fontWeight: 'bold', marginBottom: 20, marginTop: 30
+    scrollContent: {
+        flexGrow: 1,
+        padding: 20,
+        justifyContent: 'flex-start', // statt 'center'
+        alignItems: 'center',
+        paddingTop: 200,               // zusätzlich nach oben schieben
     },
     question: {
-        fontSize: 30, textAlign: 'center', marginBottom: 20, marginTop: 50
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+        color: '#333',
     },
     buttons: {
-        gap: 10,
         flexDirection: 'row',
-        marginBottom: 20
-    },
-    result: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginTop: 100,
-        textAlign: 'center'
-    },
-
-    challengeScreen: {
-        flex: 1,
-        marginBottom: 10
-    },
-    backButton: {
-        backgroundColor: "white"
+        gap: 15,
+        justifyContent: 'center',
+        width: '100%',
+        alignItems: 'center',
     },
     finishedLabel: {
-        marginTop: 7
-    }
+        fontSize: 18,
+        marginTop: 7,
+        color: '#333',
+    },
+    feedbackContainer: {
+        marginTop: 50,
+        padding: 20,
+        backgroundColor: '#d4edda',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#c3e6cb',
+        minHeight: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    feedbackText: {
+        fontSize: 20,
+        color: '#155724',
+        textAlign: 'center',
+        fontWeight: '600',
+    },
+    backButton: {
+        borderRadius: 10,
+        margin: 20,
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
 });
 
 function getChallenge() {
     let today = new Date();
-    let question = "";
-    for (let debateQuestion of dailyChallenges) {
-        let questionYear = debateQuestion.day.getFullYear();
-        let questionMonth = debateQuestion.day.getMonth();
-        let questionDay = debateQuestion.day.getDate();
-        if (today.getFullYear() === questionYear && today.getMonth() === questionMonth && today.getDate() === questionDay) {
-            question = debateQuestion.question;
+    for (let challenge of dailyChallenges) {
+        let questionYear = challenge.day.getFullYear();
+        let questionMonth = challenge.day.getMonth();
+        let questionDay = challenge.day.getDate();
+        if (
+            today.getFullYear() === questionYear &&
+            today.getMonth() === questionMonth &&
+            today.getDate() === questionDay
+        ) {
+            return challenge.question;
         }
     }
-    return question;
+    return "No challenge for today.";
 }

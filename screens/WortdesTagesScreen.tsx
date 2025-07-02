@@ -10,7 +10,6 @@ type WordItem = {
   definition: string;
   example?: string;
 };
-
 // Curated list of interesting English words
 const curiousWords = [
   'serendipity', 'petrichor', 'wanderlust', 'ephemeral', 'luminous',
@@ -145,11 +144,11 @@ export default function WortdesTagesScreen() {
     );
   }  return (
     <View style={styles.container}>
-      <CategoryHeader 
-        title={categoryThemes.word.name} 
-        color={categoryThemes.word.primary} 
+      <CategoryHeader
+        title={categoryThemes.word.name}
+        color={categoryThemes.word.primary}
       />
-      
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.word}>{item.word}</Text>
         <Text style={styles.definition}>{item.definition}</Text>
@@ -200,10 +199,10 @@ export default function WortdesTagesScreen() {
 
         <View style={styles.backButtonContainer}>
           <View style={[styles.backButton, { backgroundColor: categoryThemes.word.secondary }]}>
-            <Button 
-              title="Back" 
+            <Button
+              title="Back"
               color="#333"
-              onPress={() => router.back()} 
+              onPress={() => router.back()}
             />
           </View>
         </View>
@@ -325,3 +324,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }
 });
+
+

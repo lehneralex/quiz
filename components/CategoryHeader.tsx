@@ -16,11 +16,11 @@ export default function CategoryHeader({ title, color }: CategoryHeaderProps) {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 50,
-    paddingBottom: 15,
+    paddingTop: 80,       // noch mehr Platz oben
+    paddingBottom: 30,    // noch mehr Platz unten
     paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -35,3 +35,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 });
+
+
