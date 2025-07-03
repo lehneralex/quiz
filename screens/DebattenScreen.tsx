@@ -1,31 +1,32 @@
 import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { categoryThemes } from '../theme/colors';
 import { dailyQuestions } from '../data/debatenFragen';
 
 export default function DebattenScreen() {
     const [voted, setVoted] = useState(false);
-    const [proVotes, setProVotes] = useState(0);
-    const [contraVotes, setContraVotes] = useState(0);
     const [question, setQuestion] = useState(getQuestion());
-
-    const agreeColor = '#93B3A7'; // Grün
-    const disagreeColor = '#FF8080'; // Rot
-
     const router = useRouter();
 
-    const handleVote = async (choice: 'pro' | 'contra') => {
-        if (choice === 'pro') {
-            setProVotes(proVotes + 1);
-        } else {
-            setContraVotes(contraVotes + 1);
-        }
-        // Fortschritt speichern
+    // Farben
+    const agreeColor = '#93B3A7';
+    const disagreeColor = '#FF8080';
+
+    // Zufällige Prozentzahlen nach dem Vote
+    const [proPercentage, setProPercentage] = useState(0);
+    const [contraPercentage, setContraPercentage] = useState(0);
+
+    const handleVote = async () => {
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_debate_${today}`, 'true');
         setVoted(true);
+
+        // Fiktive Werte generieren -> Math Floor für Rundung der Zahl
+        const pro = Math.floor(Math.random() * 60) + 20; // 20–80%
+        const contra = 100 - pro;
+        setProPercentage(pro);
+        setContraPercentage(contra);
     };
 
     return (
@@ -36,10 +37,10 @@ export default function DebattenScreen() {
                         <Text style={styles.question}>{question}</Text>
                         <View style={styles.buttons}>
                             <View style={[styles.button, { backgroundColor: agreeColor }]}>
-                                <Button title="Agree" color="#333" onPress={() => handleVote('pro')} />
+                                <Button title="Agree" color="#333" onPress={() => handleVote()} />
                             </View>
                             <View style={[styles.button, { backgroundColor: disagreeColor }]}>
-                                <Button title="Disagree" color="#333" onPress={() => handleVote('contra')} />
+                                <Button title="Disagree" color="#333" onPress={() => handleVote()} />
                             </View>
                         </View>
                     </>
@@ -48,16 +49,38 @@ export default function DebattenScreen() {
                         <Text style={styles.feedbackText}>
                             Thanks for your vote, {'\n'}see you tomorrow! 😎
                         </Text>
+
+                        {/* Überschrift */}
+                        <Text style={styles.resultsHeader}>Today's results:</Text>
+
+                        {/* Fortschrittsbalken */}
+                        <ProgressBar label="Agree" percent={proPercentage} color={agreeColor} />
+                        <ProgressBar label="Disagree" percent={contraPercentage} color={disagreeColor} />
                     </View>
                 )}
             </ScrollView>
-            {/*<View style={[styles.backButton, { backgroundColor: categoryThemes.debate.secondary }]}>*/}
-            {/*    <Button title="Go back" color="#333" onPress={() => router.back()} />*/}
-            {/*</View>*/}
         </View>
     );
 }
 
+// Fortschrittsbalken-Komponente
+const ProgressBar = ({ label, percent, color }) => (
+    <View style={{ marginVertical: 8, width: '100%' }}>
+        <Text style={{ fontWeight: '500', marginBottom: 4 }}>{label}: {percent}%</Text>
+        <View style={{ height: 12, backgroundColor: '#eee', borderRadius: 6 }}>
+            <View
+                style={{
+                    width: `${percent}%`,
+                    height: '100%',
+                    backgroundColor: color,
+                    borderRadius: 6,
+                }}
+            />
+        </View>
+    </View>
+);
+
+// Styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -66,11 +89,10 @@ const styles = StyleSheet.create({
     scrollContent: {
         flexGrow: 1,
         padding: 20,
-        justifyContent: 'flex-start', // statt 'center'
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: 200,               // zusätzlich nach oben schieben
+        paddingTop: 200,
     },
-
     question: {
         fontSize: 28,
         fontWeight: 'bold',
@@ -95,25 +117,28 @@ const styles = StyleSheet.create({
     feedbackContainer: {
         marginTop: 50,
         padding: 20,
-        backgroundColor: '#d4edda',
+        backgroundColor: '#cadbbb',
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#c3e6cb',
         minHeight: 100,
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%',
     },
     feedbackText: {
         fontSize: 20,
-        color: '#155724',
+        color: 'black',
         textAlign: 'center',
         fontWeight: '600',
+        marginBottom: 20,
     },
-    backButton: {
-        borderRadius: 10,
-        margin: 20,
-        paddingVertical: 10,
-        alignItems: 'center',
+    resultsHeader: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#333',
+        textAlign: 'center',
     },
 });
 

@@ -37,7 +37,7 @@ export default function TäglicheChallenceScreen() {
                     </View>
                 )}
             </ScrollView>
-            {/* Optional: Zurück-Button */}
+            {/* Zurück-Button */}
             {/* <View style={styles.backButton}>
                 <Button title="Go back" color="#333" onPress={() => router.back()} />
             </View> */}
@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     scrollContent: {
         flexGrow: 1,
         padding: 20,
-        justifyContent: 'flex-start', // statt 'center'
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: 200,               // zusätzlich nach oben schieben
+        paddingTop: 200,
     },
     question: {
         fontSize: 28,
