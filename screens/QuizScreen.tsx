@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const agreeColor = '#93B3A7';
+const disagreeColor = '#FF8080';
+
 type QuizItem = { question: string; correct: boolean };
 type OpenTDBResponse = {
     response_code: number;
@@ -38,7 +41,9 @@ export default function QuizScreen() {
                 throw new Error();
             }
             const q = raw.results[0];
-            const decoded = decodeHtmlEntities(decodeURIComponent(q.question));
+
+            const decoded = decodeHtmlEntities(q.question);
+
             setItem({ question: decoded, correct: q.correct_answer === 'True' });
         } catch {
             setError(true);
@@ -53,10 +58,10 @@ export default function QuizScreen() {
 
     const answer = async (choice: boolean) => {
         if (!item) return;
+        console.log('Answer function called with choice:', choice); // Debugging log
         setFeedback(choice === item.correct ? '✅ True!' : '❌ False!');
 
-       
-        //Fortschritt speichern
+        // Save progress
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_quiz_${today}`, 'true');
     };
@@ -85,27 +90,68 @@ export default function QuizScreen() {
         <View style={styles.screen}>
             <Text style={styles.question}>{item.question}</Text>
             {!feedback ? (
-                <>
-                    <Button title="True" onPress={() => answer(true)} />
-                    <Button title="Wrong" onPress={() => answer(false)} />
-                </>
+                <View style={styles.buttons}>
+                <View style={[styles.button, { backgroundColor: agreeColor }]}>
+                    <Button title="True" color="#333" onPress={() => answer(true)} />
+                </View>
+                <View style={[styles.button, { backgroundColor: disagreeColor }]}>
+                    <Button title="Wrong" color="#333" onPress={() => answer(false)} />
+                </View>
+                </View>
+
             ) : (
+                <View style={styles.feedbackContainer}>
                 <Text style={[styles.feedback, feedback.startsWith('✅') ? styles.ok : styles.wrong]}>
                     {feedback}
                 </Text>
+                </View>
             )}
-            <Button title="Back" onPress={() => router.back()} />
         </View>
     );
 }
 
-// ...existing styles...
+
+
+//Stylesheet für QuizScreen
 
 const styles = StyleSheet.create({
     screen:   { flex:1,alignItems:'center',justifyContent:'center',padding:20 },
     center:   { flex:1,alignItems:'center',justifyContent:'center' },
-    question: { fontSize:24, marginBottom:20, textAlign:'center' },
+    question: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+        color: '#333',
+    },
+    buttons: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%',
+    },
+    button: {
+        flex: 1,
+        borderRadius: 10,
+        paddingVertical: 12,
+        marginHorizontal: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    feedbackContainer: {
+        marginTop: 40,
+        marginBottom: 60,
+        padding: 20,
+        backgroundColor: '#c5def2',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#b0d2ed',
+        minHeight: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+    },
     feedback: { fontSize:20, marginVertical:20 },
     ok:       { color:'green' },
     wrong:    { color:'red' },
+
 });
