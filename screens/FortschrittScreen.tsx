@@ -36,7 +36,7 @@ export default function ProgressScreen() {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
-                <Feather name="bar-chart-2" size={24} color="#BEBEBE" style={{ marginRight: 8 }} />
+                <Feather name="bar-chart-2" size={24} color="#333" style={{ marginRight: 8 }} />
                 <Text style={styles.title}>Progress</Text>
             </View>
 
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 26,
         fontWeight: '600',
-        color: '#BEBEBE',
+        color: '#333',
     },
 
     card: {
@@ -87,14 +87,14 @@ const styles = StyleSheet.create({
     },
     cardLabel: {
         fontSize: 16,
-        color: '#555',
+        color: '#333',
         marginBottom: 10,
         textAlign: 'center',
     },
     cardCount: {
         fontSize: 48,
         fontWeight: '700',
-        color: '#4B9CD3',
+        color: '#333',
     },
     tipBox: {
         backgroundColor: '#e6f0fa',
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     },
     tipText: {
         fontSize: 16,
-        color: '#444',
+        color: '#333',
         lineHeight: 22,
     },
     header: {

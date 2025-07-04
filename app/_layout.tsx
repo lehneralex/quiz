@@ -116,7 +116,16 @@ export default function RootLayout() {
                 options={{
                     title: "Info",
                     headerShown: true,
-                    presentation: 'modal',
+                    headerStyle: {
+                        backgroundColor: categoryThemes.info.primary,
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        fontSize: 22,
+                        color: '#333',
+                    },
+                    headerTintColor: '#333',
+
                 }}
             />
 
@@ -126,7 +135,16 @@ export default function RootLayout() {
                 options={{
                     title: "Progress",
                     headerShown: true,
-                    presentation: 'modal',
+                    headerStyle: {
+                        backgroundColor: categoryThemes.info.primary,
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                        fontSize: 22,
+                        color: '#333',
+                    },
+                    headerTintColor: '#333',
+
                 }}
             />
 
