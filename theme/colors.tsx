@@ -18,6 +18,10 @@ export const categoryThemes = {
     primary: '#e7cee2',
     secondary: '#dbb8d3',
     name: 'Challenge'
+  },
+  info:{
+    primary:'#f0ede9',
+    name: 'Info'
   }
 };
 

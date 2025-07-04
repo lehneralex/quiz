@@ -67,14 +67,14 @@ export default function HomeScreen() {
                 style={[styles.infoButton, { right: 30 }]}
                 onPress={() => router.push('/info')}
             >
-                <Ionicons name="information-circle" size={28} color="#fff" />
+                <Ionicons name="information-circle" size={28} color="#333" />
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={[styles.infoButton, { left: 30 }]}
                 onPress={() => router.push('/progress')}
             >
-                <Feather name="bar-chart-2" size={26} color="#fff" />
+                <Feather name="bar-chart-2" size={26} color="#333" />
             </TouchableOpacity>
 
         </View>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     infoButton: {
         position: 'absolute',
         bottom: 40,
-        backgroundColor: '#BEBEBE',
+        backgroundColor: '#f0ede9',
         width: 80,
         height: 50,
         borderRadius: 14,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     infoButtonText: {
-        color: '#fff',
+        color: '#333',
         fontSize: 24,
     },
 });

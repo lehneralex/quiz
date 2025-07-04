@@ -8,7 +8,7 @@ export default function InfoScreen() {
         <ScrollView contentContainerStyle={styles.container}>
 
             <View style={styles.header}>
-                <Ionicons name="information-circle" size={24} color="#BEBEBE" style={{ marginRight: 8 }} />
+                <Ionicons name="information-circle" size={24} color="#333" style={{ marginRight: 8 }} />
                 <Text style={styles.title}>Info</Text>
             </View>
 
@@ -18,7 +18,7 @@ export default function InfoScreen() {
             </Text>
 
             <View style={styles.section}>
-                <Feather name="calendar" size={20} color="#BEBEBE" style={styles.icon} />
+                <Feather name="calendar" size={20} color="#333" style={styles.icon} />
                 <View style={styles.textContent}>
                     <Text style={styles.sectionTitle}>Daily new tasks:</Text>
                     <Text style={styles.sectionText}>
@@ -30,7 +30,7 @@ export default function InfoScreen() {
             </View>
 
             <View style={styles.section}>
-                <Feather name="bar-chart-2" size={20} color="#BEBEBE" style={styles.icon} />
+                <Feather name="bar-chart-2" size={20} color="#333" style={styles.icon} />
                 <View style={styles.textContent}>
                     <Text style={styles.sectionTitle}>Track your progress</Text>
                     <Text style={styles.sectionText}>
@@ -41,7 +41,7 @@ export default function InfoScreen() {
             </View>
 
             <View style={styles.section}>
-                <Feather name="refresh-ccw" size={20} color="#BEBEBE" style={styles.icon} />
+                <Feather name="refresh-ccw" size={20} color="#333" style={styles.icon} />
                 <View style={styles.textContent}>
                     <Text style={styles.sectionTitle}>Daily reset</Text>
                     <Text style={styles.sectionText}>
@@ -52,7 +52,7 @@ export default function InfoScreen() {
             </View>
 
             <View style={styles.section}>
-                <Feather name="award" size={20} color="#BEBEBE" style={styles.icon} />
+                <Feather name="award" size={20} color="#333" style={styles.icon} />
                 <View style={styles.textContent}>
                     <Text style={styles.sectionTitle}>Why this matters</Text>
                     <Text style={styles.sectionText}>
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 26,
         fontWeight: '600',
-        color: '#BEBEBE',
+        color: '#333',
     },
     intro: {
         fontSize: 16,
