@@ -1,4 +1,4 @@
-import { View, Text, Button, ActivityIndicator, StyleSheet } from 'react-native';
+import {View, Text, Button, ActivityIndicator, StyleSheet, ScrollView} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
@@ -88,6 +88,7 @@ export default function QuizScreen() {
 
     return (
         <View style={styles.screen}>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
             <Text style={styles.question}>{item.question}</Text>
             {!feedback ? (
                 <View style={styles.buttons}>
@@ -106,6 +107,7 @@ export default function QuizScreen() {
                 </Text>
                 </View>
             )}
+                </ScrollView>
         </View>
     );
 }
@@ -117,6 +119,15 @@ export default function QuizScreen() {
 const styles = StyleSheet.create({
     screen:   { flex:1,alignItems:'center',justifyContent:'center',padding:20 },
     center:   { flex:1,alignItems:'center',justifyContent:'center' },
+
+    scrollContent: {
+        flexGrow: 1,
+        padding: 20,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        paddingTop: 200,
+    },
+
     question: {
         fontSize: 28,
         fontWeight: 'bold',
