@@ -35,12 +35,19 @@ export default function WortdesTagesScreen() {
     setItem(null);
 
     try {
-      // Wählt ein Wort aus der Liste
-      const selectedWord = curiousWords[currentIndex % curiousWords.length];
+      // Ensure `today` is a Date object
+      const today: Date = new Date();
+      const startOfYear: Date = new Date(today.getFullYear(), 0, 0);
+
+      // Calculate the day of the year
+      const dayOfYear: number = Math.floor((today.getTime() - startOfYear.getTime()) / 1000 / 60 / 60 / 24);
+
+      const dynamicIndex: number = dayOfYear % curiousWords.length;
+      const selectedWord: string = curiousWords[dynamicIndex];
 
       console.log('Fetching word:', selectedWord);
 
-      // Holt Definiton des Wortes aus API
+      // Fetch definition from API
       const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`);
       const entries = await response.json();
 
@@ -55,7 +62,7 @@ export default function WortdesTagesScreen() {
             definition: first.meanings[0].definitions[0].definition,
           });
         } else {
-          throw new Error('No definition found'); //Falls keine Definition vorhanden ist
+          throw new Error('No definition found');
         }
       } else {
         throw new Error('No entries found');
