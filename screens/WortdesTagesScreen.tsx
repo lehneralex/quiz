@@ -2,15 +2,17 @@ import { View, Text, Button, ActivityIndicator, StyleSheet, ScrollView, TextInpu
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CategoryHeader from '../components/CategoryHeader';
-import { categoryThemes } from '../theme/colors';
 
 type WordItem = {
   word: string;
   definition: string;
-  example?: string;
 };
-// Curated list of interesting English words
+
+//Farben für Buttons
+const agreeColor = '#93B3A7';
+const agreeColorLight = '#dcede1';
+
+// Wörter
 const curiousWords = [
   'serendipity', 'petrichor', 'wanderlust', 'ephemeral', 'luminous',
   'mellifluous', 'ethereal', 'quintessential', 'ubiquitous', 'resilience',
@@ -33,12 +35,12 @@ export default function WortdesTagesScreen() {
     setItem(null);
 
     try {
-      // Select a word from the curated list
+      // Wählt ein Wort aus der Liste
       const selectedWord = curiousWords[currentIndex % curiousWords.length];
 
       console.log('Fetching word:', selectedWord);
 
-      // Get definition from Free Dictionary API
+      // Holt Definiton des Wortes aus API
       const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`);
       const entries = await response.json();
 
@@ -51,10 +53,9 @@ export default function WortdesTagesScreen() {
           setItem({
             word: selectedWord,
             definition: first.meanings[0].definitions[0].definition,
-            example: first.meanings[0].definitions[0].example || undefined,
           });
         } else {
-          throw new Error('No definition found');
+          throw new Error('No definition found'); //Falls keine Definition vorhanden ist
         }
       } else {
         throw new Error('No entries found');
@@ -68,6 +69,7 @@ export default function WortdesTagesScreen() {
     }
   };
 
+  // Validiert den eingegebenen Satz
   const validateSentence = (sentence: string, word: string): { isValid: boolean; message: string } => {
     if (sentence.trim().length === 0) {
       return { isValid: false, message: 'Please enter a sentence.' };
@@ -77,7 +79,7 @@ export default function WortdesTagesScreen() {
       return { isValid: false, message: 'Please write a more complete sentence (at least 5 characters).' };
     }
 
-    // Check if the word is used in the sentence (case insensitive)
+    // Überprüft ob das Wort im Satz enthalten ist
     const lowerSentence = sentence.toLowerCase();
     const lowerWord = word.toLowerCase();
 
@@ -85,15 +87,16 @@ export default function WortdesTagesScreen() {
       return { isValid: false, message: `Please use the word "${word}" in your sentence.` };
     }
 
-    // Check if sentence ends with proper punctuation
+    // Überprüft ob der Satz angemessen endet
     const lastChar = sentence.trim().slice(-1);
     if (!['.', '!', '?'].includes(lastChar)) {
       return { isValid: false, message: 'Please end your sentence with proper punctuation (. ! ?).' };
     }
 
-    return { isValid: true, message: 'Great! Your sentence has been submitted successfully.' };
+    return { isValid: true, message: 'Great! Your sentence has been submitted successfully. See you tomorrow! 💡' };
   };
 
+  // Eingabe des Benutzers absenden
   const handleSubmit = async () => {
     if (!item) return;
 
@@ -105,11 +108,11 @@ export default function WortdesTagesScreen() {
     });
 
     if (validation.isValid) {
-      // Save progress - this will make the daily word inaccessible
+      // Fortschritt speichern
       const today = new Date().toISOString().slice(0, 10);
       await AsyncStorage.setItem(`done_word_${today}`, 'true');
 
-      // Clear the input field
+      // Eingabe zurücksetzen
       setUserSentence('');
     }
   };
@@ -144,21 +147,22 @@ export default function WortdesTagesScreen() {
     );
   }  return (
     <View style={styles.container}>
-      <CategoryHeader
-        title={categoryThemes.word.name}
-        color={categoryThemes.word.primary}
-      />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.dailyWordContainer}>
         <Text style={styles.word}>{item.word}</Text>
         <Text style={styles.definition}>{item.definition}</Text>
-        {item.example && (
-          <Text style={styles.example}>Example: "{item.example}"</Text>
-        )}
+        </View>
 
         <View style={styles.inputSection}>
           <Text style={styles.promptText}>Use this word in your own sentence:</Text>
-
+          {feedback && !feedback.isSuccess && (
+              <View style={[styles.feedbackContainer, styles.errorFeedback]}>
+                <Text style={[styles.feedbackText, styles.errorText]}>
+                  {feedback.message}
+                </Text>
+              </View>
+          )}
           {feedback && feedback.isSuccess ? (
             <View style={[styles.feedbackContainer, styles.successFeedback]}>
               <Text style={[styles.feedbackText, styles.successText]}>
@@ -176,41 +180,27 @@ export default function WortdesTagesScreen() {
                 numberOfLines={3}
                 textAlignVertical="top"
               />
-              {feedback && !feedback.isSuccess && (
-                <View style={[styles.feedbackContainer, styles.errorFeedback]}>
-                  <Text style={[styles.feedbackText, styles.errorText]}>
-                    {feedback.message}
-                  </Text>
-                </View>
-              )}
+
               <View style={styles.buttonContainer}>
-                <View style={[styles.customButton, { backgroundColor: categoryThemes.word.primary }]}>
-                  <Button
-                    title="Submit"
-                    color="#333"
-                    onPress={handleSubmit}
-                    disabled={userSentence.trim().length === 0}
-                  />
+                <View style={styles.buttons}>
+                  <View style={[styles.button, {
+                    backgroundColor:
+                    userSentence.trim().length === 0 ? agreeColorLight : agreeColor
+                  }]}>
+                    <Button title="Submit" color="#333" onPress={() => handleSubmit()} disabled={userSentence.trim().length === 0} />
+                  </View>
                 </View>
               </View>
             </>
           )}
-        </View>
-
-        <View style={styles.backButtonContainer}>
-          <View style={[styles.backButton, { backgroundColor: categoryThemes.word.secondary }]}>
-            <Button
-              title="Back"
-              color="#333"
-              onPress={() => router.back()}
-            />
-          </View>
         </View>
       </ScrollView>
     </View>
   );
 }
 
+
+//Styles für WortdesTagesScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -219,8 +209,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   center: {
     flex: 1,
@@ -228,39 +216,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff'
   },
-  title: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 20
+  dailyWordContainer: {
+    marginTop: 40,
+    marginBottom: 60,
+    padding: 20,
+    backgroundColor: '#fcf8cb',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#fdf7a9',
+    minHeight: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   word: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
     color: '#333'
   },
   definition: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 16,
     color: '#333'
-  },
-  example: {
-    fontSize: 16,
-    fontStyle: 'italic',
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 30
   },
   inputSection: {
     width: '100%',
     marginBottom: 30
   },
   promptText: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '700',
     textAlign: 'center',
     marginBottom: 12,
     color: '#333'
@@ -275,6 +264,20 @@ const styles = StyleSheet.create({
     minHeight: 80,
     backgroundColor: '#f9f9f9',
     color: '#333'
+  },
+  buttons: {
+    flexDirection: 'row',
+    width: '40%',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  button: {
+    flex: 1,
+    borderRadius: 10,
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   feedbackContainer: {
     padding: 16,
@@ -309,20 +312,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: '100%',
   },
-  customButton: {
-    borderRadius: 10,
-    padding: 10,
-    alignItems: 'center',
-  },
-  backButtonContainer: {
-    marginTop: 20,
-    width: '100%',
-  },
-  backButton: {
-    borderRadius: 10,
-    padding: 10,
-    alignItems: 'center',
-  }
 });
 
 
