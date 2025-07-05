@@ -1,18 +1,19 @@
+// Importe der benötigten Bibliothekten und Komponenten
 import { View, Text, Button, ActivityIndicator, StyleSheet, ScrollView, TextInput } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Typen für das Wort des Tages
 type WordItem = {
   word: string;
   definition: string;
 };
 
-//Farben für Buttons
+//Farben für den Submit-Button
 const agreeColor = '#93B3A7';
 const agreeColorLight = '#dcede1';
 
-// Wörter
+// Sammlung der Wörter
 const curiousWords = [
   'serendipity', 'petrichor', 'wanderlust', 'ephemeral', 'luminous',
   'mellifluous', 'ethereal', 'quintessential', 'ubiquitous', 'resilience',
@@ -20,37 +21,35 @@ const curiousWords = [
   'pristine', 'serene', 'whimsical', 'audacious', 'magnificent'
 ];
 
+// Hauptkomponente für den Wort des Tages Screen
 export default function WortdesTagesScreen() {
-  const router = useRouter();
+  // Initialisierung der State-Variablen
   const [item, setItem] = useState<WordItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [userSentence, setUserSentence] = useState('');
   const [feedback, setFeedback] = useState<{ message: string; isSuccess: boolean } | null>(null);
 
+  // Funktion zum Abrufen des Wortes des Tages
   const fetchWordOfDay = async () => {
     setLoading(true);
     setError(false);
     setItem(null);
 
     try {
-      // Ensure `today` is a Date object
       const today: Date = new Date();
       const startOfYear: Date = new Date(today.getFullYear(), 0, 0);
 
-      // Calculate the day of the year
       const dayOfYear: number = Math.floor((today.getTime() - startOfYear.getTime()) / 1000 / 60 / 60 / 24);
 
       const dynamicIndex: number = dayOfYear % curiousWords.length;
       const selectedWord: string = curiousWords[dynamicIndex];
 
-      console.log('Fetching word:', selectedWord);
-
-      // Fetch definition from API
+      // Fetch API für die Definition des Wortes
       const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${selectedWord}`);
       const entries = await response.json();
 
+      // Überprüfen, ob die Antwort gültig ist
       if (Array.isArray(entries) && entries.length > 0) {
         const first = entries[0];
 
@@ -76,7 +75,7 @@ export default function WortdesTagesScreen() {
     }
   };
 
-  // Validiert den eingegebenen Satz
+  // Validiert den eingegebenen Satz und speichert bei Erfolg den Fortschritt
   const validateSentence = (sentence: string, word: string): { isValid: boolean; message: string } => {
     if (sentence.trim().length === 0) {
       return { isValid: false, message: 'Please enter a sentence.' };
@@ -109,6 +108,7 @@ export default function WortdesTagesScreen() {
 
     const validation = validateSentence(userSentence, item.word);
 
+    // Feedback setzen
     setFeedback({
       message: validation.message,
       isSuccess: validation.isValid
@@ -124,10 +124,12 @@ export default function WortdesTagesScreen() {
     }
   };
 
+  // useEffect-Hook zum Abrufen des Wortes des Tages beim Laden des Screens
   useEffect(() => {
     fetchWordOfDay();
   }, []);
 
+  // Ladezustand anzeigen
   if (loading) {
     return (
         <View style={styles.center}>
@@ -136,6 +138,7 @@ export default function WortdesTagesScreen() {
     );
   }
 
+  // Fehlerzustand anzeigen
   if (error) {
     return (
         <View style={styles.center}>
@@ -145,6 +148,7 @@ export default function WortdesTagesScreen() {
     );
   }
 
+  // Kein Wort wurde geladen
   if (!item) {
     return (
         <View style={styles.center}>
@@ -152,7 +156,9 @@ export default function WortdesTagesScreen() {
           <Button title="Reload" onPress={fetchWordOfDay} />
         </View>
     );
+
   }  return (
+      // UI mit dem Wort des Tages, Eingabefeld und Feedback
     <View style={styles.container}>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -209,20 +215,24 @@ export default function WortdesTagesScreen() {
 
 //Styles für WortdesTagesScreen
 const styles = StyleSheet.create({
+  // Hauptcontainer für den Screen
   container: {
     flex: 1,
     backgroundColor: '#fff'
   },
+  // ScrollView-Inhalt
   scrollContent: {
     flexGrow: 1,
     padding: 20,
   },
+  // Zentrierter Container für Inhalte
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff'
   },
+  // Container für das Wort des Tages
   dailyWordContainer: {
     marginTop: 40,
     marginBottom: 60,
@@ -236,6 +246,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
+  // Stil für das Wort und die Definition
   word: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -250,6 +261,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: '#333'
   },
+  // Eingabebereich für den Satz des Benutzers
   inputSection: {
     width: '100%',
     marginBottom: 30
@@ -272,12 +284,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     color: '#333'
   },
+  // Container für Button
   buttons: {
     flexDirection: 'row',
     width: '40%',
     justifyContent: 'center',
     alignSelf: 'center',
   },
+  // Stil für den Button
   button: {
     flex: 1,
     borderRadius: 10,
@@ -286,6 +300,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // Stil für den Feedback-Container
   feedbackContainer: {
     padding: 16,
     borderRadius: 8,
@@ -294,6 +309,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  // Stil für das Feedback-Textfeld
   successFeedback: {
     backgroundColor: '#d4edda',
     borderColor: '#c3e6cb',

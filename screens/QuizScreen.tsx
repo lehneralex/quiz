@@ -1,18 +1,20 @@
+//Importe der benötigten Bibliothekten und Komponenten
 import {View, Text, Button, ActivityIndicator, StyleSheet, ScrollView} from 'react-native';
-import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+//Farben der Buttons
 const agreeColor = '#93B3A7';
 const disagreeColor = '#FF8080';
 
+// Typen für QuizItem und OpenTDBResponse
 type QuizItem = { question: string; correct: boolean };
 type OpenTDBResponse = {
     response_code: number;
     results: { question: string; correct_answer: 'True' | 'False' }[];
 };
 
+// Funktion zum Dekodieren von HTML-Entities
 function decodeHtmlEntities(text: string) {
     return text
         .replace(/&quot;/g, '"')
@@ -20,15 +22,15 @@ function decodeHtmlEntities(text: string) {
         .replace(/&amp;/g, '&');
 }
 
-// ...existing imports and types...
-
+// QuizScreen-Komponente
 export default function QuizScreen() {
-    const router = useRouter();
+    // Initialisierung der State-Variablen
     const [item, setItem] = useState<QuizItem | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [feedback, setFeedback] = useState<string | null>(null);
 
+    // Funktion zum Abrufen der Frage von der OpenTDB API
     const fetchQuestion = async () => {
         setLoading(true);
         setError(false);
@@ -52,23 +54,26 @@ export default function QuizScreen() {
         }
     };
 
+    // useEffect-Hook zum Abrufen der Frage beim Laden des Screens
     useEffect(() => {
         fetchQuestion();
     }, []);
 
+    // Funktion zum Verarbeitung der Antwort und Speichern des Tages-Fortschritts
     const answer = async (choice: boolean) => {
         if (!item) return;
-        console.log('Answer function called with choice:', choice); // Debugging log
         setFeedback(choice === item.correct ? '✅ True!' : '❌ False!');
 
-        // Save progress
+        // Fortschritt speichern
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_quiz_${today}`, 'true');
     };
 
+    // Ladezustand anzeigen
     if (loading) {
         return <ActivityIndicator style={styles.center} />;
     }
+    // Fehlerzustand anzeigen
     if (error) {
         return (
             <View style={styles.center}>
@@ -77,6 +82,7 @@ export default function QuizScreen() {
             </View>
         );
     }
+    // Keine Frage geladen
     if (!item) {
         return (
             <View style={styles.center}>
@@ -85,7 +91,7 @@ export default function QuizScreen() {
             </View>
         );
     }
-
+    // UI mit Frage, Buttons und Feedback
     return (
         <View style={styles.screen}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -117,9 +123,19 @@ export default function QuizScreen() {
 //Stylesheet für QuizScreen
 
 const styles = StyleSheet.create({
-    screen:   { flex:1,alignItems:'center',justifyContent:'center',padding:20 },
-    center:   { flex:1,alignItems:'center',justifyContent:'center' },
-
+    // Hauptcontainer für den Screen
+    screen:   {
+        flex:1,
+        alignItems:'center',
+        justifyContent:'center',
+        padding:20 },
+    // Zentrierter Container für Inhalte
+    center:   {
+        flex:1,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    // ScrollView-Inhalt
     scrollContent: {
         flexGrow: 1,
         padding: 20,
@@ -127,7 +143,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 200,
     },
-
+    // Frage
     question: {
         fontSize: 28,
         fontWeight: 'bold',
@@ -135,11 +151,13 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         color: '#333',
     },
+    // Container für die Buttons
     buttons: {
         flexDirection: 'row',
         justifyContent: 'center',
         width: '100%',
     },
+    // Stil für die einzelnen Buttons
     button: {
         flex: 1,
         borderRadius: 10,
@@ -148,6 +166,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    // Container für das Feedback
     feedbackContainer: {
         marginTop: 40,
         marginBottom: 60,
@@ -161,8 +180,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
     },
-    feedback: { fontSize:20, marginVertical:20 },
-    ok:       { color:'green' },
-    wrong:    { color:'red' },
-
+    // Stil für das Feedback-Textfeld
+    feedback: {
+        fontSize:20,
+        marginVertical:20
+    },
+    // Stil für das Feedback bei korrekter Antwort
+    ok:       {
+        color:'green'
+    },
+    // Stil für das Feedback bei falscher Antwort
+    wrong:    {
+        color:'red'
+    },
 });
