@@ -6,17 +6,17 @@ import { Feather , Ionicons} from '@expo/vector-icons';
 export default function InfoScreen() {
     return (
         <ScrollView contentContainerStyle={styles.container}>
-
+            {/* Header mit Icon und Titel "Info" */}
             <View style={styles.header}>
                 <Ionicons name="information-circle" size={24} color="#333" style={{ marginRight: 8 }} />
                 <Text style={styles.title}>Info</Text>
             </View>
-
+            {/* Einführungstext zur App */}
             <Text style={styles.intro}>
                 Welcome to Daily4 your daily routine to keep your mind sharp!
                 This section explains how the app works and what you can expect.
             </Text>
-
+            {/*Beschreibung der täglichen Aufgaben */}
             <View style={styles.section}>
                 <Feather name="calendar" size={20} color="#333" style={styles.icon} />
                 <View style={styles.textContent}>

@@ -4,23 +4,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
 export default function ProgressScreen() {
+    // State zum Speichern der Anzahl der vollständig erledigten Tage (alle 4 Aufgaben erledigt)
     const [completeDays, setCompleteDays] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Lädt und analysiert den Fortschritt aus dem AsyncStorage
         const loadProgress = async () => {
             try {
                 const keys = await AsyncStorage.getAllKeys();
                 const taskKeys = keys.filter(k => k.startsWith('done_'));
-
+                // Lädt und analysiert den Fortschritt aus dem AsyncStorage
                 const dailyMap: { [date: string]: Set<string> } = {};
 
                 taskKeys.forEach(key => {
-                    const [, type, date] = key.split('_');
+                    const [, type, date] = key.split('_'); // Extrahiere Kategorie (type) und Datum
                     if (!dailyMap[date]) dailyMap[date] = new Set();
-                    dailyMap[date].add(type);
+                    dailyMap[date].add(type); // Füge erledigte Aufgabe zum Set für dieses Datum hinzu
                 });
-
+                // Zähle, wie viele Tage alle 4 Aufgaben erledigt wurden
                 const completed = Object.values(dailyMap).filter(set => set.size === 4).length;
                 setCompleteDays(completed);
             } catch (error) {
@@ -35,12 +37,13 @@ export default function ProgressScreen() {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+            {/* Header mit Icon und Titel */}
             <View style={styles.header}>
                 <Feather name="bar-chart-2" size={24} color="#333" style={{ marginRight: 8 }} />
                 <Text style={styles.title}>Progress</Text>
             </View>
 
-
+            {/* Fortschrittskarte mit Anzeige der erledigten Tage */}
             <View style={styles.card}>
                 <Text style={styles.cardLabel}>Days with 4 tasks done</Text>
                 {loading ? (
