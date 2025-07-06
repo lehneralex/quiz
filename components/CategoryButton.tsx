@@ -1,18 +1,23 @@
+// Importiert notwendige React- und React Native-Komponenten, Icons und Farbthemen
 import React from 'react';
 import { Pressable, Text, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { categoryThemes, CategoryType} from "../theme/colors";
 
+// Definiert die Props des Buttons: Kategorie, ob erledigt (done) und Klickfunktion
 type Props = {
     category: CategoryType;
     done: boolean;
     onPress: () => void;
 };
 
+// Holt die Bildschirmbreite, um Buttonbreite dynamisch zu setzen
 const screenWidth = Dimensions.get('window').width;
 const buttonMargin = 30;
 
+// Komponente für einen Kategorie-Button, der je nach Status farblich angepasst is
 export default function CategoryButton({ category, done, onPress }: Props) {
+    // Farb- und Text-Theme zur jeweiligen Kategorie
     const theme = categoryThemes[category];
 
     return (
@@ -33,11 +38,12 @@ export default function CategoryButton({ category, done, onPress }: Props) {
     );
 }
 
+// Styles für Button, Text und Icon mit Schatten, Positionierung, Größe und Farben
 const styles = StyleSheet.create({
     button: {
         padding: 28,
         borderRadius: 14,
-        width: screenWidth - buttonMargin,
+        width: screenWidth - buttonMargin, // Breite dynamisch je nach Bildschirm
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 20,

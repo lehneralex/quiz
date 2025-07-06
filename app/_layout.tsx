@@ -1,6 +1,6 @@
-import { Stack } from 'expo-router';
-import { Platform } from 'react-native';
-import { categoryThemes } from '../theme/colors'; // <- hier ist es korrekt!
+import {Stack} from 'expo-router';
+import {Platform} from 'react-native';
+import {categoryThemes} from '../theme/colors'; // <- hier ist es korrekt!
 
 export default function RootLayout() {
     return (
@@ -10,7 +10,7 @@ export default function RootLayout() {
                     backgroundColor: '#cadbbb', // Standardfarbe (kann später pro Seite überschrieben werden)
                     elevation: Platform.OS === 'android' ? 4 : 0,
                     shadowColor: Platform.OS === 'ios' ? '#000' : undefined,
-                    shadowOffset: Platform.OS === 'ios' ? { width: 0, height: 2 } : undefined,
+                    shadowOffset: Platform.OS === 'ios' ? {width: 0, height: 2} : undefined,
                     shadowOpacity: Platform.OS === 'ios' ? 0.1 : undefined,
                     shadowRadius: Platform.OS === 'ios' ? 4 : undefined,
                     height: 500

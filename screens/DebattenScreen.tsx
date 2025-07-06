@@ -9,7 +9,7 @@ export default function DebattenScreen() {
     const [question, setQuestion] = useState(getQuestion());
     const router = useRouter();
 
-    // Farben
+    // Farben für Buttons und Fortschrittsbalken
     const agreeColor = '#93B3A7';
     const disagreeColor = '#FF8080';
 
@@ -17,6 +17,7 @@ export default function DebattenScreen() {
     const [proPercentage, setProPercentage] = useState(0);
     const [contraPercentage, setContraPercentage] = useState(0);
 
+    // Funktion, die beim Abstimmen aufgerufen wird
     const handleVote = async () => {
         const today = new Date().toISOString().slice(0, 10);
         await AsyncStorage.setItem(`done_debate_${today}`, 'true');
@@ -63,7 +64,7 @@ export default function DebattenScreen() {
     );
 }
 
-// Fortschrittsbalken-Komponente
+// Fortschrittsbalken-Komponente zur Anzeige der Prozente
 const ProgressBar = ({ label, percent, color }) => (
     <View style={{ marginVertical: 8, width: '100%' }}>
         <Text style={{ fontWeight: '500', marginBottom: 4 }}>{label}: {percent}%</Text>
@@ -82,10 +83,12 @@ const ProgressBar = ({ label, percent, color }) => (
 
 // Styles
 const styles = StyleSheet.create({
+    // Haupt-Container: nimmt gesamten Bildschirm ein, weißer Hintergrund
     container: {
         flex: 1,
         backgroundColor: '#fff',
     },
+    // Scrollbereich: zentriert Inhalte und Abstand
     scrollContent: {
         flexGrow: 1,
         padding: 20,
@@ -93,6 +96,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 200,
     },
+    // Frage-Text: groß, fett, zentriert
     question: {
         fontSize: 28,
         fontWeight: 'bold',
@@ -100,12 +104,14 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         color: '#333',
     },
+    // Button-Container: ordnet Buttons nebeneinander an
     buttons: {
         flexDirection: 'row',
         gap: 15,
         justifyContent: 'center',
         width: '100%',
     },
+    // Einzelner Button-Stil: abgerundet, mit Abstand und zentriertem Inhalt
     button: {
         flex: 1,
         borderRadius: 10,
@@ -114,6 +120,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    // Feedback-Box nach dem Vote: Hintergrund, Rahmen, zentrierter Text
     feedbackContainer: {
         marginTop: 50,
         padding: 20,
@@ -126,6 +133,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
     },
+    // Feedback-Text: größer, zentriert, leicht fett
     feedbackText: {
         fontSize: 20,
         color: 'black',
@@ -133,6 +141,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginBottom: 20,
     },
+    // Überschrift für Ergebnis-Anzeige: fett, zentriert
     resultsHeader: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -142,6 +151,7 @@ const styles = StyleSheet.create({
     },
 });
 
+// Funktion, die Frage zurückgibt, die zum heutigen Datum passt
 function getQuestion() {
     let today = new Date();
     for (let debateQuestion of dailyQuestions) {
