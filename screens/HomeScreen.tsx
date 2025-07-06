@@ -36,7 +36,11 @@ export default function HomeScreen() {
 
             checkTasksDone();
 
-
+            // setDebateDone(false);
+            // setChallengeDone(false);
+            // setWordDone(false);
+            // setQuizDone(false);
+            // setLoading(false);
         }, [])
     );
 
