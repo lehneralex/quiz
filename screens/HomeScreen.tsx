@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Pressable, TouchableOpacity, Dimensions} from 'react-native';
-import {useRouter} from 'expo-router';
+import {useFocusEffect, useRouter} from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {categoryThemes} from "../theme/colors";
 import {Ionicons, Feather} from '@expo/vector-icons';
 import CategoryButton from "../components/CategoryButton";
 
@@ -15,59 +14,52 @@ export default function HomeScreen() {
     const [wordDone, setWordDone] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    //hier werden die Buttons ausgegraut falls bereits erledigt wurde
-    useEffect(() => {
-        // const checkTasksDone = async () => {
-        //     const today = new Date().toISOString().slice(0, 10);
-        //
-        //     const [debate, challenge, quiz, word] = await Promise.all([
-        //         AsyncStorage.getItem(`done_debate_${today}`),
-        //         AsyncStorage.getItem(`done_challenge_${today}`),
-        //         AsyncStorage.getItem(`done_quiz_${today}`),
-        //         AsyncStorage.getItem(`done_word_${today}`),
-        //     ]);
-        //     setLoading(false);
-        //
-        //     setDebateDone(debate === 'true');
-        //     setChallengeDone(challenge === 'true');
-        //     setQuizDone(quiz === 'true');
-        //     setWordDone(word === 'true');
-        // };
-        //
-        // checkTasksDone();
-        setQuizDone(false);
-        setChallengeDone(false);
-        setDebateDone(false);
-        setWordDone(false);
-        setLoading(false);
-    }, []);
+    // hier werden die Buttons ausgegraut falls bereits erledigt wurde
+    useFocusEffect(
+        useCallback(() => {
+            const checkTasksDone = async () => {
+                const today = new Date().toISOString().slice(0, 10);
+
+                const [debate, challenge, quiz, word] = await Promise.all([
+                    AsyncStorage.getItem(`done_debate_${today}`),
+                    AsyncStorage.getItem(`done_challenge_${today}`),
+                    AsyncStorage.getItem(`done_quiz_${today}`),
+                    AsyncStorage.getItem(`done_word_${today}`),
+                ]);
+
+                setDebateDone(debate === 'true');
+                setChallengeDone(challenge === 'true');
+                setQuizDone(quiz === 'true');
+                setWordDone(word === 'true');
+                setLoading(false);
+            };
+
+            checkTasksDone();
+
+
+        }, [])
+    );
 
     return (
         <View style={styles.container}>
             {loading == false ? (
                 <>
-
-
                     <Text style={styles.title}>Daily 4{'\n'}keep your mind sharp</Text>
-
                     <CategoryButton
                         category="quiz"
                         done={quizDone}
                         onPress={() => router.push('/quiz')}
                     />
-
                     <CategoryButton
                         category="word"
                         done={wordDone}
                         onPress={() => router.push('/word')}
                     />
-
                     <CategoryButton
                         category="debate"
                         done={debateDone}
                         onPress={() => router.push('/debate')}
                     />
-
                     <CategoryButton
                         category="challenge"
                         done={challengeDone}
@@ -76,7 +68,6 @@ export default function HomeScreen() {
                 </>
             ) : <></>
             }
-
 
             <TouchableOpacity
                 style={[styles.infoButton, {right: 30}]}
@@ -91,13 +82,9 @@ export default function HomeScreen() {
             >
                 <Feather name="bar-chart-2" size={26} color="#333"/>
             </TouchableOpacity>
-
         </View>
     );
 }
-
-const screenWidth = Dimensions.get('window').width;
-const buttonMargin = 30;
 
 const styles = StyleSheet.create({
     container: {
@@ -114,7 +101,6 @@ const styles = StyleSheet.create({
         color: '#333',
         textAlign: 'center'
     },
-
     infoButton: {
         position: 'absolute',
         bottom: 40,

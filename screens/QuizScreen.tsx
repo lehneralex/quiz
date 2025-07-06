@@ -118,8 +118,6 @@ export default function QuizScreen() {
     );
 }
 
-
-
 //Stylesheet für QuizScreen
 
 const styles = StyleSheet.create({

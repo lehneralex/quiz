@@ -1,20 +1,20 @@
-import { Stack } from 'expo-router';
-import { Platform } from 'react-native';
-import { categoryThemes } from '../theme/colors';
+import {Stack} from 'expo-router';
+import {Platform} from 'react-native';
+import {categoryThemes} from '../theme/colors'; // <- hier ist es korrekt!
+
 export default function RootLayout() {
     return (
         <Stack
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: '#cadbbb', // Hintergrundfarbe des Headers (helles Grün)
-                    elevation: Platform.OS === 'android' ? 4 : 0, // Schattenhöhe auf Android (4), auf iOS kein "Schatten"/Hervorhebung
-                    shadowColor: Platform.OS === 'ios' ? '#000' : undefined, // Schattenfarbe auf iOS (schwarz), auf Android nicht gesetzt
-                    shadowOffset: Platform.OS === 'ios' ? { width: 0, height: 2 } : undefined, // Position des Schattens auf iOS
-                    shadowOpacity: Platform.OS === 'ios' ? 0.1 : undefined, // Transparenz des Schattens auf iOS (sehr leicht)
-                    shadowRadius: Platform.OS === 'ios' ? 4 : undefined, // Weichzeichnungsradius des Schattens auf iOS
-                    height: 500 // Höhe des Headers in Pixel
-                }
-                ,
+                    backgroundColor: '#cadbbb', // Standardfarbe (kann später pro Seite überschrieben werden)
+                    elevation: Platform.OS === 'android' ? 4 : 0,
+                    shadowColor: Platform.OS === 'ios' ? '#000' : undefined,
+                    shadowOffset: Platform.OS === 'ios' ? {width: 0, height: 2} : undefined,
+                    shadowOpacity: Platform.OS === 'ios' ? 0.1 : undefined,
+                    shadowRadius: Platform.OS === 'ios' ? 4 : undefined,
+                    height: 500
+                },
                 headerTitleStyle: {
                     fontWeight: 'bold',
                     fontSize: 22,
