@@ -38,5 +38,7 @@ export const dailyChallenges = [
     { question: "Declutter one small digital space (e.g. email or gallery).", day: new Date(2025, 6, 12) },
     { question: "Stretch your body for at least five minutes.", day: new Date(2025, 6, 13) },
     { question: "Write down three things you’re grateful for.", day: new Date(2025, 6, 14) },
+    { question: "Turn off notifications for one hour and enjoy the calm.", day: new Date(2025, 6, 15) },
+
 
 ];
