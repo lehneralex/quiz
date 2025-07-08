@@ -1,6 +1,6 @@
 import {Stack} from 'expo-router';
 import {Platform} from 'react-native';
-import {categoryThemes} from '../theme/colors'; // <- hier ist es korrekt!
+import {categoryThemes} from '../theme/colors';
 
 export default function RootLayout() {
     return (
