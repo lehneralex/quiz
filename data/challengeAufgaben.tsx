@@ -29,4 +29,14 @@ export const dailyChallenges = [
     { question: "Tell someone today that you appreciate them.", day: new Date(2025, 6, 21) },
     { question: "Write a positive review or recommendation today.", day: new Date(2025, 6, 22) },
     { question: "Take a small risk today, like talking to someone new.", day: new Date(2025, 6, 23) }
+    { question: "Wake up 15 minutes earlier and enjoy the quiet.", day: new Date(2025, 6, 6) },
+    { question: "Compliment yourself for something you've done well.", day: new Date(2025, 6, 7) },
+    { question: "Take a mindful walk and observe your surroundings.", day: new Date(2025, 6, 8) },
+    { question: "Drink a glass of water first thing in the morning.", day: new Date(2025, 6, 9) },
+    { question: "Send a kind message to someone unexpectedly.", day: new Date(2025, 6, 10) },
+    { question: "Do one thing today with full focus and no multitasking.", day: new Date(2025, 6, 11) },
+    { question: "Declutter one small digital space (e.g. email or gallery).", day: new Date(2025, 6, 12) },
+    { question: "Stretch your body for at least five minutes.", day: new Date(2025, 6, 13) },
+    { question: "Write down three things you’re grateful for.", day: new Date(2025, 6, 14) },
+
 ];
